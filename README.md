@@ -2,6 +2,8 @@
 
 Um jogo estilo Flappy Bird desenvolvido em Python.
 
+![Flap Bird Play Demo](demo.gif)
+
 ## Requisitos
 
 - Python 3.13.3 +
