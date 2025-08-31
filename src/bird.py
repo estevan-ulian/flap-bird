@@ -17,6 +17,7 @@ class Bird(pygame.sprite.Sprite):
         self.current_image = 0
         self.image = pygame.image.load(
             'assets/sprites/redbird-upflap.png')
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect[0] = WINDOW_WIDTH / 3
         self.rect[1] = WINDOW_HEIGHT / 2
@@ -25,11 +26,7 @@ class Bird(pygame.sprite.Sprite):
     def update(self):
         self.current_image = (self.current_image + 1) % len(self.images)
         self.image = self.images[self.current_image]
-
-        # Update position
         self.rect[1] += self.speed
-
-        # Update gravity
         self.speed += GRAVITY
 
     def bump(self):
