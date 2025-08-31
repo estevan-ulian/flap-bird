@@ -3,7 +3,7 @@ from src.constants import WINDOW_WIDTH, WINDOW_HEIGHT, SPEED, GRAVITY
 
 
 class Bird(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
         self.images = [
@@ -24,12 +24,14 @@ class Bird(pygame.sprite.Sprite):
         self.speed = SPEED
 
     def update(self):
+        """ Update bird position and animation """
         self.current_image = (self.current_image + 1) % len(self.images)
         self.image = self.images[self.current_image]
         self.rect[1] += self.speed
         self.speed += GRAVITY
 
     def bump(self):
+        """ Make the bird jump """
         self.speed = -SPEED
         pygame.mixer.Sound(
             'assets/audio/wing.ogg').play(loops=0,   maxtime=0, fade_ms=0)
