@@ -13,13 +13,11 @@ class Game:
             'assets/sprites/background-day.png').convert_alpha()
         self.clock = pygame.time.Clock()
 
-        # Estados do jogo
         self.MENU = 0
         self.PLAYING = 1
         self.GAME_OVER = 2
         self.game_state = self.MENU
 
-        # Load start screen
         self.title_image = pygame.image.load(
             'assets/sprites/message.png').convert_alpha()
 
@@ -27,12 +25,20 @@ class Game:
         self.font_large = pygame.font.Font(None, 28)
         self.font_small = pygame.font.Font(None, 18)
 
+        pygame.mixer.init()
+        self.menu_music = pygame.mixer.Sound('assets/audio/menu.mp3')
+        self.is_menu_music_playing = False
+
+        self.gaming_music = pygame.mixer.Sound('assets/audio/gaming.ogg')
+        self.is_gaming_music_playing = False
+
+        self.gameover_music = pygame.mixer.Sound('assets/audio/game-over.mp3')
+        self.is_gameover_music_playing = False
+
     def is_off_screen(self, sprite):
-        """Check if a sprite is off the screen"""
         return sprite.rect[0] < -sprite.rect[2]
 
     def draw_start_screen(self, background):
-        """Draw the start screen"""
         self.window.blit(background, (0, 0))
 
         title_rect = self.title_image.get_rect()
@@ -108,12 +114,32 @@ class Game:
                         elif self.game_state == self.PLAYING:
                             bird.bump()
                         elif self.game_state == self.GAME_OVER:
+                            if self.is_menu_music_playing:
+                                self.menu_music.stop()
+                                self.is_menu_music_playing = False
+                            if self.is_gaming_music_playing:
+                                self.gaming_music.stop()
+                                self.is_gaming_music_playing = False
+                            if self.is_gameover_music_playing:
+                                self.gameover_music.stop()
+                                self.is_gameover_music_playing = False
                             self.game_state = self.MENU
 
             match self.game_state:
                 case self.MENU:
+                    if not self.is_menu_music_playing:
+                        self.menu_music.play(loops=-1)
+                        self.is_menu_music_playing = True
                     self.draw_start_screen(background)
                 case self.PLAYING:
+                    if self.is_menu_music_playing:
+                        self.menu_music.stop()
+                        self.is_menu_music_playing = False
+
+                    if not self.is_gaming_music_playing:
+                        self.gaming_music.play(loops=-1)
+                        self.is_gaming_music_playing = True
+
                     self.window.blit(background, (0, 0))
                     if self.is_off_screen(ground_group.sprites()[0]):
                         ground_group.remove(ground_group.sprites()[0])
@@ -139,8 +165,15 @@ class Game:
                     if (pygame.sprite.groupcollide(bird_group, ground_group, False, False, pygame.sprite.collide_mask)) or (pygame.sprite.groupcollide(bird_group, pipe_group, False, False, pygame.sprite.collide_mask)):
                         pygame.mixer.Sound(
                             'assets/audio/hit.ogg').play(loops=0, maxtime=0, fade_ms=0)
+                        if self.is_gaming_music_playing:
+                            self.gaming_music.stop()
+                            self.is_gaming_music_playing = False
                         self.game_state = self.GAME_OVER
                 case self.GAME_OVER:
+                    if not self.is_gameover_music_playing:
+                        self.gameover_music.play(loops=-1)
+                        self.is_gameover_music_playing = True
+
                     self.window.blit(background, (0, 0))
                     self.window.blit(background, (0, 0))
                     bird_group.draw(self.window)
