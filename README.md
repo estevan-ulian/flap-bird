@@ -1,6 +1,6 @@
 # Flap Bird Game
 
-Um jogo estilo Flappy Bird desenvolvido em Python.
+Um jogo estilo Flap Bird desenvolvido em Python.
 
 ![Flap Bird Play Demo](demo.gif)
 
