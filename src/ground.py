@@ -16,4 +16,5 @@ class Ground(pygame.sprite.Sprite):
         self.rect[1] = WINDOW_HEIGHT - GROUND_HEIGHT
 
     def update(self):
+        """ Move the ground to the left """
         self.rect[0] -= GAME_SPEED
